@@ -58,30 +58,65 @@ function buildCharts(sample) {
   // 2. Use d3.json to load and retrieve the samples.json file 
   d3.json("samples.json").then((data) => {
     // 3. Create a variable that holds the samples array. 
-
+    var samples = data.samples;
     // 4. Create a variable that filters the samples for the object with the desired sample number.
-
+    let thisSample = [];
+    for (let i = 0; i<samples.length; i++) {
+      if (samples[i].id === sample) {
+          thisSample.push(samples[i]);
+      }
+    }
+    console.log(thisSample);
     //  5. Create a variable that holds the first sample in the array.
-
+    var firstSample = samples[0];
 
     // 6. Create variables that hold the otu_ids, otu_labels, and sample_values.
-
+    var otu_ids = thisSample[0].otu_ids;
+    var otu_labels = thisSample[0].otu_labels;
+    var sample_values = thisSample[0].sample_values;
 
     // 7. Create the yticks for the bar chart.
     // Hint: Get the the top 10 otu_ids and map them in descending order  
     //  so the otu_ids with the most bacteria are last. 
-/*
-    var yticks = 
+
+    //map ids of highest sample values - sort sampval
+    
+    console.log(thisSample);
+    var sortedValues = thisSample.sort((a, b) => a.sample_values - b.sample_values);
+    console.log(sortedValues);
+    var slicedValues = sortedValues[0].sample_values.slice(0,10);
+    console.log(slicedValues);
+    var reversedValues = slicedValues.reverse();
+    var sortedIDs = sortedValues.map(object => object.otu_ids);
+    console.log(sortedIDs);
+    var slicedIDs = sortedIDs[0].slice(0,10);
+    console.log(slicedIDs);
+    var reversedIDs = slicedIDs.reverse();
+    console.log(reversedIDs);
+    
+
+    //otu_ids = otu_ids.reverse();
+    var yticks = [];
+    for (let i = 0; i<10; i++) {
+          yticks.push(`OTU ${reversedIDs[i]}`);
+    }
+    console.log(yticks);
 
     // 8. Create the trace for the bar chart. 
-    var barData = [
-      
-    ];
+    var barData = [{
+      x: reversedValues,
+      y: yticks,
+      text: otu_labels,
+      type: "bar",
+      orientation: "h"
+    }];
+
     // 9. Create the layout for the bar chart. 
     var barLayout = {
-     
+      title: "Top 10 Bacteria Cultures Found",
     };
+    
     // 10. Use Plotly to plot the data with the layout. 
-*/    
+    Plotly.newPlot("bar", barData, barLayout);
   });
 }
